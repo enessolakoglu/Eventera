@@ -1,0 +1,222 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Hello World App
+# during dev, should point to your local machine
+host: localhost:8080
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+  
+tags:
+- name: "Start Application"
+  description: "Start Application"
+- name: "Register"
+  description: "Register services"
+- name: "Event"
+  description: "Events' services"
+
+paths:
+
+  
+  
+  /api/secure/startApplication:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: StartApplication
+    get:
+      tags:
+       - "Start Application"
+      description: Return
+      # used as the method name of the controller
+      operationId: startApplication
+      parameters:
+        - name: udid
+          in: header
+          description: User's udid
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          description: User's authorization
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/CommonResponse"
+  /api/registration/validateId:
+   x-swagger-router-controller: Register
+   post:
+     tags:
+      - "Register"
+     operationId: registerUser
+     description: User register service
+     parameters:
+      - name: udid
+        in: header
+        description: User's udid
+        required: true
+        type: string
+      - name: registerObject
+        in: body
+        required: true
+        schema:
+         $ref: "#/definitions/RegisterObject"
+     responses:
+       "200":
+         description: OK
+         schema:
+          $ref: "#/definitions/RegisterResponse"
+          
+  /api/registration/categories:
+    x-swagger-router-controller: Register
+    get:
+      tags:
+      - "Register"
+      description: Return
+      operationId: getEventsCategories
+      parameters:
+        - name: udid
+          in: header
+          description: User's udid
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          description: User's authorization
+          required: false
+          type: string
+      responses:
+        "200":
+          description: response
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Interests"        
+           
+  /api/secure/events:
+    x-swagger-router-controller: Event
+    get:
+     tags:
+      - "Event"
+     operationId: getAllEvent
+     parameters:
+      - name: udid
+        in: header
+        description: User's udid
+        type: string
+     responses:
+      "200":
+       description: response
+       schema:
+        type: array
+        items:
+         $ref: "#/definitions/Event"
+         
+         
+
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+
+
+definitions:
+
+
+
+  CommonResponse:
+    required:
+      - code
+      - message
+    properties:
+      code:
+       type: number
+      message:
+        type: string
+        
+        
+  RegisterResponse:
+   required:
+    - code
+    - message
+   properties:
+    code:
+     type: number
+    message:
+     type: string
+    secret:
+     type: string
+     
+     
+     
+  RegisterObject:
+    properties:
+     sex:
+      enum: ["MALE","FEMALE"]
+      type: string 
+     mail:
+      type: string
+     age:
+      type: string
+     job:
+      type: string
+     adress:
+      type: string
+     interests:
+      type: array
+      items:
+       $ref: "#/definitions/Interests"
+       
+  
+  Interests:
+   properties:
+    id:
+     type: string
+    name:
+     type: string
+  
+  
+  Event:
+   properties:
+    id:
+     type: string
+    name:
+     type: string
+    description:
+     type: string
+    startTime:
+     type: string
+    endTime:
+     type: string
+    categoryName:
+     type: string
+    location:
+     type: string
+    
+    
+   
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
